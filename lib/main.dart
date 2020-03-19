@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fluttershoppingcart/models/cart.dart';
 import 'package:fluttershoppingcart/models/item.dart';
 import 'package:fluttershoppingcart/screens/checkout_page.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(ChangeNotifierProvider(
+    create: (context) => Cart(),
+    child: MyApp(),
+  ));
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -27,41 +34,45 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Shopping cart'),
-        actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
+    return Consumer<Cart>(builder: (context, cart, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Shopping cart'),
+          actions: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => CheckoutPage()));
+                    },
                   ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CheckoutPage()));
-                  },
-                ),
-                Text('3')
-              ],
-            ),
-          )
-        ],
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(items[index].title),
-            trailing: Icon(Icons.add),
-            onTap: () {},
-          );
-        },
-      ),
-    );
+                  Text(cart.count.toString())
+                ],
+              ),
+            )
+          ],
+          centerTitle: true,
+        ),
+        body: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(items[index].title),
+              trailing: Icon(Icons.add),
+              onTap: () {
+                cart.add(items[index]);
+              },
+            );
+          },
+        ),
+      );
+    });
   }
 }
