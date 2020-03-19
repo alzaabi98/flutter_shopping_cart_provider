@@ -65,6 +65,7 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (context, index) {
             return ListTile(
               title: Text(items[index].title),
+              subtitle: Text(items[index].price.toString()),
               trailing: Icon(Icons.add),
               onTap: () {
                 cart.add(items[index]);
